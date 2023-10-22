@@ -14,7 +14,9 @@ jobs:
       run: |
         # Add commands to set up the ARM toolchain
         # This may include downloading and installing the toolchain
-
+        
+         $ apt install --yes {gcc,binutils}-arm-linux-gnueabihf
+         working-directory: ${{ github.workspace }}
     - name: Build C/C++ Program for ARM
       run: |
         arm-gcc main.c -o main_arm
