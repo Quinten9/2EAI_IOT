@@ -1,0 +1,25 @@
+name: Build for TUL Pynq Z2
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set Up ARM Toolchain
+      run: |
+        # Add commands to set up the ARM toolchain
+        # This may include downloading and installing the toolchain
+
+    - name: Build C/C++ Program for ARM
+      run: |
+        arm-gcc main.c -o main_arm
+      working-directory: ${{ github.workspace }}
+
+    - name: Execute Program on ARM
+      run: |
+        # Add commands to execute the program on TUL Pynq Z2
