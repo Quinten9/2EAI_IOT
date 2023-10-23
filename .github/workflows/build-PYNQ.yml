@@ -1,6 +1,9 @@
-name: Build for TUL Pynq Z2
+name: Cross-Compile for TUL Pynq Z2
 
-on: [push]
+on:
+  push:
+    branches:
+      - main  
 
 jobs:
   build:
@@ -10,18 +13,36 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Set Up ARM Toolchain
+    - name: Prepare Environment for Cross-Compilation
       run: |
-        # Add commands to set up the ARM toolchain
-        # This may include downloading and installing the toolchain
-        
-         $ apt install --yes {gcc,binutils}-arm-linux-gnueabihf
-         working-directory: ${{ github.workspace }}
-    - name: Build C/C++ Program for ARM
-      run: |
-        arm-gcc main.c -o main_arm
-      working-directory: ${{ github.workspace }}
+        # Install the cross-compiler for ARM on the GitHub Actions runner (assumes Ubuntu)
+        sudo apt-get update
+        sudo apt-get install -y gcc-arm-linux-gnueabihf binutils-arm-linux-gnueabihf
+      shell: bash
 
-    - name: Execute Program on ARM
+    - name: Compile Test Program
       run: |
-        # Add commands to execute the program on TUL Pynq Z2
+        # Your C/C++ source code (main.c) goes here
+        cat <<EOF > main.c
+        #include <stdio.h>
+        #include <stdlib.h>
+
+        int main(int argc, char** argv) {
+            printf("Hello, world!\n");
+            return EXIT_SUCCESS;
+        }
+        EOF
+
+        # Cross-compile the program for ARM
+        arm-linux-gnueabihf-gcc -o out.exe main.c
+        # Verify the binary
+        file out.exe
+      shell: bash
+
+    - name: Copy Binary to Pynq
+      run: |
+        # You can add commands to copy the binary to the TUL Pynq Z2 here
+        # Example: scp out.exe user@pynq_ip_address:/path/to/destination
+      shell: bash
+
+ 
